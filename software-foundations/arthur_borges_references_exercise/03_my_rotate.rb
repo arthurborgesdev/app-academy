@@ -23,6 +23,14 @@ def my_rotate!(array, amt)
   array
 end
 
+# Sucint way
+def my_rotate!(array, amt)
+  amt > 0 ?
+    amt.times { array.push(array.shift) } :
+    (-amt).times { array.unshift(array.pop) }
+  array
+end
+
 
 array_1 = ["a", "b", "c", "d"]
 p array_1.object_id                 # => 70354216023780
