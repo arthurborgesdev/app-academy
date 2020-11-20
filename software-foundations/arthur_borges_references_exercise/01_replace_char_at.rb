@@ -10,6 +10,11 @@ def replace_char_at!(str, char, idx)
   str.each_char.with_index {|letter, index| (index == idx ? str[index] = char : str[index] = letter)}
 end
 
+# Outstanding better way of doing it
+def replace_char_at!(str, char, idx)
+  str[idx] = char
+  str
+end
 
 str_1 = "hello"
 p str_1.object_id                       # => 70120944788380
