@@ -10,6 +10,11 @@ def scalar_multiple!(array, multiplier)
   array.each_with_index {|elem, index| array[index] *= multiplier}
 end
 
+# Succinct way
+def scalar_multiple!(array, multiplier)
+  array.map! { |elem| elem *= multiplier }
+end
+
 
 array_1 = [7, 0, 4]
 p array_1.object_id                             # => 70326264380840
