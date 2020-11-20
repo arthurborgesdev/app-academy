@@ -23,7 +23,7 @@ def my_rotate!(array, amt)
   array
 end
 
-# Sucint way
+# Succinct way
 def my_rotate!(array, amt)
   amt > 0 ?
     amt.times { array.push(array.shift) } :
