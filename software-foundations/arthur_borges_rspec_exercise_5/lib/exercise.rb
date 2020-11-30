@@ -31,3 +31,23 @@ def zany_zip(*arr)
   end
   zipped_arr
 end
+
+def maximum(array, &prc)
+  calc = Hash.new(0)
+  array.map do |elem| 
+    calc[elem] = prc.call(elem) 
+  end
+  begin
+    calc.select { |k, v| v == calc.values.max }.to_a.last[0]
+  rescue => exception
+    return nil
+  else
+    calc.select { |k, v| v == calc.values.max }.to_a.last[0]
+  end
+end
+
+def my_group_by(array, &prc)
+  hash = Hash.new
+  array.map { |elem| hash[elem] = prc.call(elem)}
+  hash
+end
