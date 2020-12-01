@@ -47,7 +47,51 @@ def maximum(array, &prc)
 end
 
 def my_group_by(array, &prc)
-  hash = Hash.new
-  array.map { |elem| hash[elem] = prc.call(elem)}
+  hash = Hash.new { Array.new }
+  array.map { |elem| hash[prc.call(elem)] <<= elem }
   hash
+end
+
+def max_tie_breaker(array, prc1, &prc2)
+  group = my_group_by(array, &prc2)
+  group[group.keys.max][0]
+end
+
+def silly_syllables(sentence) 
+  words = sentence.split(" ")
+  
+  w = 0
+  while w < words.length
+    l = 0
+    word = words[w]
+    if word.split("").count { |char| "aeiou".include?(char) } >= 2
+      while l < word.length
+        # p "Entrando"
+        # p word[l]
+        unless "aeiou".include?(word[l])
+          # p "Dentro"
+          # p words[w][l]
+          # p "-----------------"
+          word[l] = "0"
+        else
+          l += 1
+          break
+        end
+        l += 1
+        # p word[l]
+      end
+      l = word.length - 1
+      while l > 0
+        unless "aeiou".include?(word[l])
+          word[l] = "0"
+        else
+          l -= 1
+          break
+        end
+        l -= 1
+      end
+    end
+    w += 1
+  end
+  words.map {|word| word.delete "0" }.join(" ")
 end
