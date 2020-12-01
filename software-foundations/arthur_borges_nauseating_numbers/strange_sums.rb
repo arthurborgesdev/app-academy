@@ -21,3 +21,4 @@ p strange_sums([42, 3, -1, -42])      # 1
 p strange_sums([-5, 5])               # 1
 p strange_sums([19, 6, -3, -20])      # 0
 p strange_sums([9])                   # 0
+
