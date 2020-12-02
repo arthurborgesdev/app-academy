@@ -1,23 +1,34 @@
+require "byebug"
+
 def matrix_addition_reloaded(*matrix)
   # p matrix[0].length
   return nil if matrix.one? { |matx| matrix[0].length != matx.length}
   
-  add_matrix = Array.new(matrix[0].length) { Array.new (matrix[0][0]) { 0 } }
+  add_matrix = Array.new(matrix[0].length) { Array.new (matrix[0].length) { 0 } }
 #=begin 
   j = 0
   i = 0
+  k = 0
+  # p "add_matrix: #{add_matrix}"
   while j < matrix.length
+    # p matrix.length
     while i < matrix[j].length 
-      # p "add_matrix['#{j}']['#{i}']: #{matrix_1[j][i]} + #{matrix_2[j][i]}"
-      p matrix
-      # add_matrix[j][i]
-      # matrix[j][i] = matrix_1[j][i] + matrix_2[j][i]
-      i += 1
+      # p matrix[j] # [[2,5], [4,7]]
+      while j < matrix[j][i].length
+        debugger
+        p matrix[j][i] # [2,5]
+        add_matrix[i][k] += matrix[j][i][k]
+        p "add_matrix: #{add_matrix}"
+        j += 1
+      end
+      j = 0
+      k += 1
     end
-    i = 0
-    j += 1
+    j = 0
+    k = 0
+    i += 1
   end
-  mx
+  add_matrix
 end
 
 matrix_a = [[2,5], [4,7]]
