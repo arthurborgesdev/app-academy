@@ -1,20 +1,19 @@
 require 'prime'
 
 def mersenne_prime(n)
-  mersenne = mersenne?(n)
-  return true if Prime.prime(mersenne)
-  false
+  count = 0 
+  number = 0
+  loop do
+    # p "count: #{count}"
+    # p "n: #{n}"
+    count += 1 if Prime.prime?(mersenne(number))
+    return mersenne(number) if count == n
+    number += 1
+  end
 end
 
-def mersenne?(num)
-  x = 1
-  count = 0
-  while count < 2 ** x - 1
-    return count if count == 2 ** x - 1
-    count += 1
-    x += 1
-  end
-  false
+def mersenne(num)
+  2 ** num - 1
 end
 
 p mersenne_prime(1) # 3
