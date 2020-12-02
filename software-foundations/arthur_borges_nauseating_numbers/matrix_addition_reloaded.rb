@@ -1,24 +1,18 @@
-require "byebug"
+# require "byebug"
 
 def matrix_addition_reloaded(*matrix)
   # p matrix[0].length
   return nil if matrix.one? { |matx| matrix[0].length != matx.length}
-  
-  add_matrix = Array.new(matrix[0].length) { Array.new (matrix[0].length) { 0 } }
-#=begin 
+
+  add_matrix = Array.new(matrix[0].length) { Array.new (matrix[0][0].length) { 0 } }
+  # p add_matrix
   j = 0
   i = 0
   k = 0
-  # p "add_matrix: #{add_matrix}"
-  while j < matrix.length
-    # p matrix.length
-    while i < matrix[j].length 
-      # p matrix[j] # [[2,5], [4,7]]
-      while j < matrix[j][i].length
-        debugger
-        p matrix[j][i] # [2,5]
+  while i < matrix[j].length
+    while k < matrix[j][i].length
+      while j < matrix.length
         add_matrix[i][k] += matrix[j][i][k]
-        p "add_matrix: #{add_matrix}"
         j += 1
       end
       j = 0
