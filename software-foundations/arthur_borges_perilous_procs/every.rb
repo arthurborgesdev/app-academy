@@ -1,4 +1,7 @@
 def every?(array, &prc)
+  every = []
+  array.each { |elem| every << prc.call(elem) }
+  every.all?
 end
 
 
