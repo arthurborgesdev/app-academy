@@ -1,4 +1,14 @@
 def multi_map(array, n = 1, &prc)
+  array.map do |elem| 
+    (1..n).each { |num| elem = prc.call(elem)}
+    elem
+    # i = 0
+    # while i < n
+    #   elem = prc.call(elem)
+    #   i += 1
+    # end 
+    # elem
+  end
 end
 
 p multi_map(['pretty', 'cool', 'huh?']) { |s| s + '!'}      # ["pretty!", "cool!", "huh?!"]
