@@ -1,4 +1,5 @@
 def disjunct_select(array, *prc)
+  array.map { |elem| elem if prc.any? { |operation| operation.call(elem) } }.compact
 end
 
 longer_four = Proc.new { |s| s.length > 4 }
