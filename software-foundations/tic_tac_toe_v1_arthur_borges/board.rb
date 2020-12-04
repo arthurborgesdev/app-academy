@@ -10,13 +10,27 @@ class Board
   end
 
   def empty?(position)
-    p position
-    @grid[position] == '_'
+    grid[position[0]][position[1]] == '_'
   end
   
   def place_mark(position, mark)
-    raise "Position is not valid or position is not empty" unless self.valid?(position) || self.empty?(position)
-    grid[position] = mark
+    raise "invalid mark" unless self.valid?(position) && self.empty?(position)
+    grid[position[0]][position[1]] = mark
+  end
+
+  def print
+    grid.each { |line| p line }
+  end
+  
+  def win_row?(mark)
+    grid.any? { |line| line.all?(mark) }
+  end
+
+  def win_col?(mark)
+    grid.transpose.any? { |line| line.all?(mark) }
   end
 
 end
+
+# b = Board.new
+# b.print
