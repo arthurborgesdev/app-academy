@@ -1,12 +1,13 @@
 class Board
-  attr_reader :grid
+  attr_reader :grid, :size
 
-  def initialize
-    @grid = Array.new(3) { Array.new(3) { '_' } }
+  def initialize(size)
+    @size = size
+    @grid = Array.new(size) { Array.new(size) { '_' } }
   end
 
   def valid?(position)
-    position[0] >= 0 && position[0] < 3 && position[1] >= 0 && position[1] < 3
+    position[0] >= 0 && position[0] < size && position[1] >= 0 && position[1] < size
   end
 
   def empty?(position)
@@ -60,7 +61,6 @@ class Board
   def empty_positions?
     grid.any? { |line| line.any?('_') }
   end
-
 end
 
 # b = Board.new
