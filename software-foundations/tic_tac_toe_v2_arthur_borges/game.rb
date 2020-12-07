@@ -2,17 +2,16 @@ require './board'
 require './human_player'
 
 class Game
-  def initialize(size, player_1_mark, player_2_mark)
+  def initialize(size, *marks)
     @board = Board.new(size)
-    @player_1 = HumanPlayer.new(player_1_mark)
-    @player_2 = HumanPlayer.new(player_2_mark)
+    @players = []
+    marks.each { |mark| @players << HumanPlayer.new(mark) }
 
-    @current_player = @player_1
+    @current_player = @players[0]
   end
 
   def switch_turn
-    @current_player == @player_1 ? @current_player = @player_2 : @current_player = @player_1
-    @current_player
+    @current_player = @players.rotate![0]
   end
 
   def play
