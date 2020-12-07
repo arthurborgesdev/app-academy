@@ -30,6 +30,37 @@ class Board
     grid.transpose.any? { |line| line.all?(mark) }
   end
 
+  def win_diagonal?(mark)
+    first_diagonal, second_diagonal = [], []
+    i, j = 0, 0
+    while i < grid.length
+      while j < grid[i].length
+        first_diagonal << grid[i][j] if i = j
+        j += 1
+      end
+      j = 0
+      i += 1
+    end
+    i, j = 0, 0
+    while i < grid.length
+      while j < grid[i].length
+        second_diagonal << grid[i][j] if i + j == grid.length - 1
+        j += 1
+      end
+      j = 0
+      i += 1
+    end
+    [first_diagonal, second_diagonal].any? { |diagonal| diagonal.all?(mark) }
+  end
+
+  def win?(mark)
+    win_row?(mark) || win_col?(mark) || win_diagonal?(mark)
+  end
+
+  def empty_positions?
+    grid.any? { |line| line.any?('_') }
+  end
+
 end
 
 # b = Board.new
