@@ -2,11 +2,12 @@ require './board'
 require './human_player'
 
 class Game
-  def initialize(size, *marks)
+  def initialize(size, option)
     @board = Board.new(size)
     @players = []
-    marks.each { |mark| @players << HumanPlayer.new(mark) }
-
+    option.each do |mark, player_type| 
+      player_type ? @players << ComputerPlayer.new(mark) : @players << HumanPlayer.new(mark) 
+    end
     @current_player = @players[0]
   end
 
@@ -17,7 +18,7 @@ class Game
   def play
     while @board.empty_positions?
       @board.print
-      if @board.win?(@board.place_mark(@current_player.get_position, @current_player.mark))
+      if @board.win?(@board.place_mark(@current_player.get_position(@board.legal_positions), @current_player.mark))
         p "Victory - #{@current_player} --- #{@current_player.mark} Wins!"
         return
       else 
