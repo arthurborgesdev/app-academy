@@ -44,7 +44,7 @@ class TodoBoard
       @lists[list_label].toggle_item(*args)
     when "rm"
       args.map! { |elem| elem.to_i }
-      @listS[list_label].remove_item(*args)
+      @lists[list_label].remove_item(*args)
     when "purge"
       @lists[list_label].purge
     when "quit"
