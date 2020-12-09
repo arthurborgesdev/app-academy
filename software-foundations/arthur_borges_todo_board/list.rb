@@ -46,10 +46,10 @@ class List
     p '-'.ljust(WIDTH - 1, '-')
     p ' '.ljust((WIDTH - label.length) / 2) + label.upcase + ' '.rjust((WIDTH - label.length) / 2)
     p '-'.ljust(WIDTH - 1, '-')
-    p "Index | Item #{' '.rjust(23)} | Deadline  "
+    p "Index | Item #{' '.rjust(23)} | Deadline | Done? "
     p '-'.ljust(WIDTH - 1, '-')
     @items.each_with_index do |item, idx| 
-      p "#{idx}     | #{item.title.ljust(28)} | #{item.deadline}" 
+      p "#{idx}     | #{item.title.ljust(28)} | #{item.deadline} | #{item.done}"
     end
     p '-'.ljust(WIDTH - 1, '-')
     nil
@@ -61,6 +61,7 @@ class List
       p '-'.ljust(WIDTH - 1, '-')
       p "#{item.title} #{item.deadline.rjust(WIDTH - item.title.length)}"
       p "#{@items[index].description}"
+      p "#{@items[index].done}"
       p '-'.ljust(WIDTH - 1, '-')
     end
     nil
@@ -71,6 +72,7 @@ class List
     p "#{@items[0].title}"
     p "#{@items[0].deadline}"
     p "#{@items[0].description}"
+    p "#{@items[0].done}"
     p '-'.ljust(WIDTH - 1, '-')
     nil
   end
@@ -101,5 +103,19 @@ class List
 
   def sort_by_date!
     @items.sort_by! { |item| item.deadline }
+  end
+
+  def toggle_item(index)
+    @items[index].toggle
+  end
+
+  def remove_item(index)
+    return false unless valid_index?(index)
+    @items.delete_at(index)
+    true
+  end
+
+  def purge
+    @items.reject! { |item| item.done }
   end
 end

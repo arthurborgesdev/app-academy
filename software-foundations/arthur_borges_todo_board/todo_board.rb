@@ -33,6 +33,14 @@ class TodoBoard
         args.map! { |elem| elem.to_i }
         @list.print_full_item(*args)
       end
+    when "toggle"
+      args.map! { |elem| elem.to_i }
+      @list.toggle_item(*args)
+    when "rm"
+      args.map! { |elem| elem.to_i }
+      @list.remove_item(*args)
+    when "purge"
+      @list.purge
     when "quit"
       return false
     else
@@ -43,8 +51,9 @@ class TodoBoard
   end
 
   def run
-    until self.get_command == false
-      self.get_command
+    loop do
+      break unless self.get_command
+      # break if result == false
     end
   end
 
