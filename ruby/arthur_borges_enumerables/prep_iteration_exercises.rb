@@ -177,8 +177,24 @@ puts
 
 class Array
   def my_each(&prc)
+    i = 0
+    while i < self.length
+      prc.call(self[i]) 
+      i += 1
+    end
+    self
   end
 end
+
+return_value = [1, 2, 3].my_each do |num|
+  puts num
+end.my_each do |num|
+  puts num
+end
+
+p return_value # => [1, 2, 3]
+
+puts 
 
 # ### My Enumerable Methods
 # * Implement new `Array` methods `my_map` and `my_select`. Do
@@ -195,14 +211,32 @@ end
 
 class Array
   def my_map(&prc)
+    mapped = []
+    self.my_each { |elem| mapped << prc.call(elem) }
+    mapped
   end
 
   def my_select(&prc)
+    selected = []
+    self.my_each { |elem| selected << elem if prc.call(elem) }
+    selected
   end
 
   def my_inject(&blk)
+    injected = 0
+    self.my_each do |elem| 
+      # p injected
+      injected += blk.call(0, elem)
+    end
+    injected
   end
 end
+
+p [1, 2, 3].my_map { |elem| elem ** 3 }
+p [1, 2, 3].my_select { |elem| elem.even? }
+p [1, 23, 76, 2].my_inject { |sum, elem| sum + elem }
+
+puts 
 
 # ### Concatenate
 # Create a method that takes in an `Array` of `String`s and uses `inject`
@@ -214,4 +248,7 @@ end
 # ```
 
 def concatenate(strings)
+  strings.inject { |sum, elem| sum + elem }
 end
+
+p concatenate(["Yay ", "for ", "strings!"])
