@@ -6,7 +6,7 @@ class Player
   end
 
   def guess
-    p "Try a guess"
+    puts "Please say a letter, #{name}"
     input = gets.chomp
   end
 

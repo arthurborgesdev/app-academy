@@ -1,11 +1,16 @@
 require "set"
 require_relative "Player"
+require_relative "AiPlayer"
+
 class GameMultiplayer
+
+  attr_reader :players, :fragment
 
   def initialize(fragment, dictionary, *players)
     @players = players.map {|player| Player.new(player)}
-    @fragment = fragment
     @dictionary = Set.new(File.open(dictionary).map {|word| word.chomp})
+    @players.push(AiPlayer.new("H-1000", players.length, fragment, @dictionary))
+    @fragment = fragment
     @current_player = @players[0]
     @previous_player = @players[-1]
 
@@ -38,14 +43,12 @@ class GameMultiplayer
   end
 
   def take_turn(player)
-    puts "Please say a letter, #{player.name}"
-    input = gets.chomp
-    until valid_play?(input)
+    answer = player.guess
+    until valid_play?(answer)
       # player.alert_invalid_guess
-      puts "Please say a letter, #{player.name}"
-      input = gets.chomp
+      player.guess
     end
-    @fragment += input
+    @fragment += answer
     p @fragment
     dictionary_check(player, @fragment)
   end
