@@ -9,10 +9,11 @@ class AiPlayer
     @dictionary = dictionary
     @losing_move = []
     @winning_move = []
-    @count = 0
+    # @count = 0
   end
 
   def guess(fragment)
+    # @count = 0
     losing_move = []
     winning_move = []
     possible_moves = []
@@ -24,29 +25,23 @@ class AiPlayer
       possible_moves = @dictionary.select do |word|
         word.index(future_guess) == 0
       end 
-      puts "Possible_moves: #{possible_moves}"
-      smart_move = possible_moves.none? { |word| word.length - future_guess.length <= @n }
+      smart_move = possible_moves.any? { |word| word.length - future_guess.length <= @n }
       p "Smart_move: #{smart_move}"
-      
       if @dictionary.include?(future_guess) 
         losing_move << letter
       elsif smart_move
         winning_move << letter
-        # p winning_move
-      else 
-        losing_move << letter
       end
       puts "Winning_moves: #{winning_move}"
       puts "losing_moves: #{losing_move}"
     end
 
-    # Tenho que verificar quando o array de winning ou losing acaba para não entrar no loop. Deu com palavra tedious
     unless winning_move.empty?
       random_win = rand(winning_move.size)
       return winning_move[random_win] 
+    else
+      random_lose = rand(losing_move.size)
+      return losing_move[random_lose]
     end
-
-    random_lose = rand(losing_move.size)
-    return losing_move[random_lose]
   end
 end
