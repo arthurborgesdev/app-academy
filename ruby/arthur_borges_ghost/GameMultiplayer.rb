@@ -46,7 +46,7 @@ class GameMultiplayer
     player.is_a?(AiPlayer) ? answer = player.guess(fragment) : answer = player.guess
     until valid_play?(answer)
       # player.alert_invalid_guess
-      player.is_a?(AiPlayer) ? player.guess(fragment) : answer = player.guess
+      player.is_a?(AiPlayer) ? answer = player.guess(fragment) : answer = player.guess
     end
     @fragment += answer
     p @fragment
