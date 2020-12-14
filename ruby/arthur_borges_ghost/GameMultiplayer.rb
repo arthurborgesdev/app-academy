@@ -100,5 +100,5 @@ class GameMultiplayer
 end
 
 
-game1 = GameMultiplayer.new("", "dictionary.txt", "Arthur", "Andressa", "Cleide")
+game1 = GameMultiplayer.new("", "dictionary.txt", "Arthur", "Andressa") # "Cleide")
 game1.run
