@@ -9,7 +9,7 @@ class GameMultiplayer
   def initialize(fragment, dictionary, *players)
     @players = players.map {|player| Player.new(player)}
     @dictionary = Set.new(File.open(dictionary).map {|word| word.chomp})
-    @players.push(AiPlayer.new("H-1000", players.length, fragment, @dictionary))
+    @players.push(AiPlayer.new("H-1000", players.length, @dictionary))
     @fragment = fragment
     @current_player = @players[0]
     @previous_player = @players[-1]
@@ -43,10 +43,10 @@ class GameMultiplayer
   end
 
   def take_turn(player)
-    answer = player.guess
+    player.is_a?(AiPlayer) ? answer = player.guess(fragment) : answer = player.guess
     until valid_play?(answer)
       # player.alert_invalid_guess
-      player.guess
+      player.is_a?(AiPlayer) ? player.guess(fragment) : answer = player.guess
     end
     @fragment += answer
     p @fragment
