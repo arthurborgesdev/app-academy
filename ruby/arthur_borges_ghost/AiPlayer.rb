@@ -28,31 +28,22 @@ class AiPlayer
         losses: 0,
         wins: 0
       }
-      puts "possible_moves: #{tree[letter][:branch]}"
+      # puts "possible_moves: #{tree[letter][:branch]}"
       wins = tree[letter][:branch].count { |word| word.length - future_guess.length <= @n }
       tree[letter][:wins] += wins
-      p "Wins: #{wins}"
+      # p "Wins: #{wins}"
       if tree[letter][:branch].include?(future_guess) 
         tree[letter][:losses] += 1
       end
-      puts "Tree: #{tree}"
+      # puts "Tree: #{tree}"
     end
     calc_balance = {}
     tree.each { |letter, value| calc_balance[letter] = value[:wins] - value[:losses] }
-    p calc_balance
+    winning_moves = calc_balance.select { |letter, balance| balance >= calc_balance.values.max }.keys
+    # p winning_moves
 
-
-
-
-=begin
-    unless winning_move.empty?
-      random_win = rand(winning_move.size)
-      return winning_move[random_win] 
-    else
-      random_lose = rand(losing_move.size)
-      return losing_move[random_lose]
-    end
-=end
+    random_win = rand(winning_moves.size)
+    return winning_moves[random_win] 
   end
 
 end
