@@ -1,29 +1,41 @@
 class Maze
-  attr_reader :maze_text
+  attr_reader :maze_text, :start_position, :end_position
   def initialize
-    maze = Array.new { Array.new }
-    i, j = 0, 0
-    File.open("maze1.txt", mode = "r") do |line| p line 
+    create_maze("maze1.txt")
+    @start_position = position(@maze_array, "S")
+    @end_position = position(@maze_array, "E")
+  end
+
+  def position(maze, point)
+    @maze_array.each_with_index do |line, i|
+      line.each_with_index do |elem, j|
+        return([i, j]) if elem == point  
+      end
     end
   end
-end
 
-# maze = Maze.new
-# p maze.maze_text
-p "aiushdui111"
-size = 0
-File.open("maze1.txt").each do |line|
-  size = line.chomp.length
-  break
-end
-maze_array = Array.new(size) { Array.new(size) }
-i = 0
-File.open("maze1.txt").each_with_index do |line, j|
-  while i < line.chomp.length 
-    maze_array[j][i] = line.chomp.split('')[i]
-    i += 1
+  def create_maze(file)
+    @maze_array = []
+    i = 0
+    File.open("maze1.txt").each_with_index do |line, j|
+      @maze_array << []
+      while i < line.chomp.length 
+        @maze_array[j] << line.chomp.split('')[i]
+        i += 1
+      end
+      i = 0
+    end
   end
-  i = 0 
+  
+  def print
+    @maze_array.each { |line| p line.join }
+  end
+
+  
 end
 
-p maze_array
+
+maze = Maze.new
+p maze.print
+p maze.start_position
+p maze.end_position
