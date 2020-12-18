@@ -30,6 +30,10 @@ class Maze
     end
   end
 
+  def H_calc
+    (self.point[0] - @end_position[0]).abs + (self.point[0] - @end_position[1]).abs - 1
+  end
+
   def print
     @maze_array.each { |line| p line.join }
   end
@@ -39,17 +43,16 @@ class Maze
     j = point[1] - 1
     while i < point[0] + 1
       while j < point[1] + 1
-        next if i == point[0] && j == point[1]
+        next if point[0] + point[1] == i + j || (point[0] - point[1]).abs == (i - j).abs
         unless point[i][j] == "*" || open_list.include?(point[i][j])
-        open_list.push(
-          point[i][j]: { G: , H: , F: }
-        )  
-    return [
-      [point[0] - 1, point[1]]: {G:},
-      [point[0], point[1] + 1],
-      [point[0] + 1, point[1]],
-      [point[0], point[1] - 1]
-    ]
+          point_G_calc = parent.G + 10
+          point_H_calc = point.H_calc
+          @open_list.push(point[i][j]: { G: G_calc, H: point_H_calc, F: point_G_calc + point_H_calc } )  
+        end
+        j += 1
+      end
+      i += 1
+    end
   end
 
   def valid_adjacents(adjacent_positions)
