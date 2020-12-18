@@ -5,6 +5,8 @@ class Maze
     @start_position = position(@maze_array, "S")
     @end_position = position(@maze_array, "E")
     @current_position = start_position
+    @open_list = []
+    @closed_list = []
   end
 
   def create_maze(file)
@@ -32,9 +34,18 @@ class Maze
     @maze_array.each { |line| p line.join }
   end
 
-  def adjacents(point)
+  def adjacents(point, parent)
+    i = point[0] - 1
+    j = point[1] - 1
+    while i < point[0] + 1
+      while j < point[1] + 1
+        next if i == point[0] && j == point[1]
+        unless point[i][j] == "*" || open_list.include?(point[i][j])
+        open_list.push(
+          point[i][j]: { G: , H: , F: }
+        )  
     return [
-      [point[0] - 1, point[1]],
+      [point[0] - 1, point[1]]: {G:},
       [point[0], point[1] + 1],
       [point[0] + 1, point[1]],
       [point[0], point[1] - 1]
