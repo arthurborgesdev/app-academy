@@ -56,7 +56,7 @@ class Maze
           (point[0] - point[1]).abs == (i - j).abs || # first diagonal
           @maze[i][j] == "*" ||
           @open_list.include?(point[i, j])
-          parent ? point_G_calc = parent.G + 10 : point_G_calc = 0
+          parent ? point_G_calc = parent[:G] + 10 : point_G_calc = 0
           point_H_calc = H_calc(point)
           hash_point = { 
             point: [i, j], 
@@ -65,7 +65,7 @@ class Maze
             F: point_G_calc + point_H_calc 
           }
           @open_list << hash_point
-          p @open_list
+          p "@open_list: #{@open_list}"
         end
         j += 1
       end
@@ -78,58 +78,64 @@ class Maze
     valids = adjacent_positions.select! { |point| @maze[point[0]][point[1]] == " " }
   end
 
-  def random_move(valid_adjacents)
-    random_index = rand(valid_adjacents.size)
-    valid_adjacents[random_index]
-  end
-
-  def step(position)
-    adjacent_position = adjacents(position)
-    valid_positions = valid_adjacents(adjacent_position)
-    random_move(valid_positions)
-  end
-
-  def end_game?(position)
-    puts "position: #{position}"
-    puts "@maze: #{@maze}"
-    # position_first = position.first
-    @maze[position[0]][position[1]] == "E"
+  def random_move(hash_point)
+    random_index = rand(hash_point.size)
+    move_point = hash_point[random_index][:point]
+    @maze[move_point[0]][move_point[1]] = "X"
+    [move_point[0], move_point[1]]
   end
 
   def run
     start_position = { point: @current_position, G: 0, H: 0, F: 0 }
     @open_list << start_position
     adjacents(@current_position)
-    @closed_list = @open_list.delete(@current_position)
-    p @open_list
-    p @closed_list
-  end  
-=begin  
-    # p @maze[@current_position[0]][@current_position[1]]
-    until end_game?(step(@current_position))
-      p @current_position
-      @current_position = step(@current_position)
-      p @current_position
-      # position_first = @current_position.first
-      p @maze[@current_position[0]][@current_position[1]]
-      @maze[@current_position[0]][@current_position[1]] = "X"
-      self.print
+    # p @closed_list
+    # p "current_position: #{@current_position}"
+    new_parent = @open_list.select {|hash| hash[:point] == @current_position }.first
+    @closed_list << new_parent
+
+    @open_list.reject! { |hash| hash[:point] == @current_position }
+    # p @open_list
+    # p @closed_list
+    lowest_F_value = @open_list.map { |hash| hash[:F] }.min
+    # p lowest_F_value
+    lowest_F_point = @open_list.select { |hash| hash[:F] <= lowest_F_value }
+    # p lowest_F_point
+    @current_position = random_move(lowest_F_point)
+
+    p "@current_position: #{@current_position}"
+    p "@closed_list: #{@closed_list}"
+    p "@open_list: #{@open_list}"
+    p "lowest_F_value: #{lowest_F_value}"
+    p "lowest_F_point: #{lowest_F_point}"
+    p @maze
+    print
+    
+    until lowest_F_point == @end_position 
+      new_parent = @open_list.select {|hash| hash[:point] == @current_position }.first
+      @closed_list << new_parent
+      adjacents(@current_position, new_parent)
+
+      new_parent = @open_list.select {|hash| hash[:point] == @current_position }
+      @closed_list << new_parent
+      @open_list.reject! { |hash| hash[:point] == @current_position }
+      # p @open_list
+      # p @closed_list
+      lowest_F_value = @open_list.map { |hash| hash[:F] }.min
+      # p lowest_F_value
+      lowest_F_point = @open_list.select { |hash| hash[:F] <= lowest_F_value }
+      # p lowest_F_point
+      @current_position = random_move(lowest_F_point)
+      p "@current_position: #{@current_position}"
+      p @maze
+
+      print
     end
-    self.print
-  end
-end
-=end
+  end  
+
 end
 
 maze = Maze.new
-# p maze.print
-# p maze.start_position
-# p maze.end_position
-# p maze.adjacents(maze.start_position)
-# p maze.adjacents(maze.end_position)
 
-# p maze.valid_adjacents(maze.adjacents(maze.end_position))
-
-# p maze.end_game?(maze.valid_adjacents(maze.adjacents(maze.end_position)))
 p maze
 maze.run
