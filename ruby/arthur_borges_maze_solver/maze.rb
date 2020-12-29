@@ -7,6 +7,7 @@ class Maze
     @current_position = start_position
     @open_list = []
     @closed_list = []
+    @adjacent_list = []
   end
 
   def create_maze(file)
@@ -38,6 +39,26 @@ class Maze
     @maze.each { |line| p line.join }
   end
 
+  def adjacents(position)
+    i = position[0] - 1
+    j = position[1] - 1
+    while i <= position[0] + 1
+      while j <= position[1] + 1
+        case 
+        when (position[0] - position[1]).abs == (i - j).abs # first diagonal
+        when (position[0] + position[1]) == (i + j).abs # second diagonal
+        when (position[0] - position[1]).abs == (i - j).abs + 1 # cross section
+          # don't insert center point, that is the originating position
+          @adjacent_list << [i, j] unless i == position[0] && j == position[1] 
+        end
+        j += 1
+      end
+      j = 0
+      i += 1
+    end
+    p @adjacent_list
+  end
+=begin
   def adjacents(point, parent = nil)
     i = point[0] - 1
     j = point[1] - 1
@@ -103,13 +124,13 @@ class Maze
     # p lowest_F_point
     @current_position = random_move(lowest_F_point)
 
-    p "@current_position: #{@current_position}"
-    p "@closed_list: #{@closed_list}"
-    p "@open_list: #{@open_list}"
-    p "lowest_F_value: #{lowest_F_value}"
-    p "lowest_F_point: #{lowest_F_point}"
-    p @maze
-    print
+    puts "@current_position: #{@current_position}"
+    puts "@closed_list: #{@closed_list}"
+    puts "@open_list: #{@open_list}"
+    puts "lowest_F_value: #{lowest_F_value}"
+    puts "lowest_F_point: #{lowest_F_point}"
+    puts @maze
+    puts
     
     until lowest_F_point == @end_position 
       new_parent = @open_list.select {|hash| hash[:point] == @current_position }.first
@@ -132,10 +153,15 @@ class Maze
       print
     end
   end  
+=end
 
+  def run
+    adjacents(@current_position)
+  end
 end
 
 maze = Maze.new
 
 p maze
+maze.print
 maze.run
