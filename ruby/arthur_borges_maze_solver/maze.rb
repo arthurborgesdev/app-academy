@@ -2,9 +2,9 @@ class Maze
   attr_reader :maze_text, :start_position, :end_position
   def initialize
     create_maze("maze1.txt")
-    @start_position = position(@maze, "S")
-    @end_position = position(@maze, "E")
-    @current_position = start_position
+    @start_position = get_position(@maze, "S")
+    @end_position = get_position(@maze, "E")
+    @current_position = init_node(start_position)
     @open_list = []
     @closed_list = []
     @adjacent_list = []
@@ -23,7 +23,7 @@ class Maze
     end
   end
 
-  def position(maze, point)
+  def get_position(maze, point)
     @maze.each_with_index do |line, i|
       line.each_with_index do |elem, j|
         return([i, j]) if elem == point  
@@ -31,44 +31,74 @@ class Maze
     end
   end
 
-  def H_calc(point)
-    (point[0] - @end_position[0]).abs + (point[1] - @end_position[1]).abs - 1
+  def init_node(position)
+    position_status = { 
+      position: [position[0], position[1]], 
+      G: 0, 
+      H: 0, 
+      F: 0
+    }
+  end
+
+  def calculate_H(position)
+    (position[0] - @end_position[0]).abs + (position[1] - @end_position[1]).abs - 1
   end
 
   def print
     @maze.each { |line| p line.join }
   end
 
-  def adjacents(position)
-    (position[0] - 1..position[0] + 1).each do |i|
-      (position[1] - 1..position[1] + 1).each do |j|
-        # don't insert center point, which is the originating position
-        @adjacent_list << [i, j] unless i == position[0] && j == position[1] || invalid([i, j])
+  def adjacents(node)
+    x = node[:position][0]
+    y = node[:position][1]
+    (x - 1..x + 1).each do |i|
+      (y - 1..y + 1).each do |j|
+        @adjacent_list << calculate_F([i, j], node) unless i == x && j == y || invalid([i, j])
       end
     end 
     @adjacent_list
   end
 
   def invalid(position)
-    # p position[0]
-    # p position[1]
-    # p @maze[position[0]][position[1]]
-    @maze[position[0]][position[1]] == "*"
+    x = position[0]
+    y = position[1]
+    @maze[x][y] == "*"
+  end
+
+  def first_diagonal?(x1, y1, x2, y2)
+    (x1 - y1).abs == (x2 - y2).abs
+  end
+
+  def second_diagonal?(x1, y1, x2, y2)
+    (x1 - y1).abs == (x2 - y2).abs - 1
+  end
+
+  def calculate_F(position, parent)
+    x1 = position[0]
+    y1 = position[1]
+    x2 = parent[:position][0]
+    y2 = parent[:position][1]
+
+    if first_diagonal?(x1, x2, y1, y2) || second_diagonal?(x1, x2, y1, y2)
+      calculated_G_score = parent[:G] + 14
+    else
+      calculated_G_score = parent[:G] + 10
+    end
+    
+    calculated_H_score = calculate_H(position)
+
+    position_status = { 
+      position: [position[0], position[1]], 
+      G: calculated_G_score, 
+      H: calculated_H_score, 
+      F: calculated_G_score + calculated_H_score 
+    }
+  end
+
+  def find_lowest_F(list)
   end
 =begin
   def adjacents(point, parent = nil)
-    i = point[0] - 1
-    j = point[1] - 1
-    while i <= point[0] + 1
-      while j <= point[1] + 1
-        p "i: #{i}"
-        p "j: #{j}"
-        p "@maze#{[i]}#{[j]}: #{@maze[i][j]}"
-        # p "point[0]: #{point[0]}"
-        # p "point[1]: #{point[1]}"
-        # p point[0] + point[1] == i + j
-        # p (point[0] - point[1]).abs == (i - j).abs
-        # p @maze[i][j] == "*"
         # p @open_list.include?(point[i, j])
         unless point[0] + point[1] == i + j || # second diagonal
           (point[0] - point[1]).abs == (i - j).abs || # first diagonal
