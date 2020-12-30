@@ -53,10 +53,10 @@ class Maze
     y = node[:position][1]
     (x - 1..x + 1).each do |i|
       (y - 1..y + 1).each do |j|
-        @adjacent_list << calculate_F([i, j], node) unless i == x && j == y || invalid([i, j])
+        @open_list << calculate_F([i, j], node) unless i == x && j == y || invalid([i, j])
       end
     end 
-    @adjacent_list
+    @open_list
   end
 
   def invalid(position)
@@ -95,7 +95,14 @@ class Maze
     }
   end
 
-  def find_lowest_F(list)
+  def find_lowest_F
+    @open_list.reject! { |hash| hash[:position] == @current_position }
+    # p @open_list
+    # p @closed_list
+    lowest_F_value = @open_list.map { |hash| hash[:F] }.min
+    # p lowest_F_value
+    lowest_F_point = @open_list.select { |hash| hash[:F] <= lowest_F_value }.first
+    # p lowest_F_point
   end
 =begin
   def adjacents(point, parent = nil)
@@ -184,6 +191,7 @@ class Maze
 
   def run
     p adjacents(@current_position)
+    p find_lowest_F
   end
 end
 
