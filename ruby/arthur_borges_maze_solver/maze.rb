@@ -44,13 +44,8 @@ class Maze
     j = position[1] - 1
     while i <= position[0] + 1
       while j <= position[1] + 1
-        case 
-        when (position[0] - position[1]).abs == (i - j).abs # first diagonal
-        when (position[0] + position[1]) == (i + j).abs # second diagonal
-        when (position[0] - position[1]).abs == (i - j).abs + 1 # cross section
-          # don't insert center point, that is the originating position
-          @adjacent_list << [i, j] unless i == position[0] && j == position[1] 
-        end
+        # don't insert center point, that is the originating position
+        @adjacent_list << [i, j] unless i == position[0] && j == position[1] 
         j += 1
       end
       j = 0
