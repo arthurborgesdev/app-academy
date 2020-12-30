@@ -40,18 +40,13 @@ class Maze
   end
 
   def adjacents(position)
-    i = position[0] - 1
-    j = position[1] - 1
-    while i <= position[0] + 1
-      while j <= position[1] + 1
-        # don't insert center point, that is the originating position
-        @adjacent_list << [i, j] unless i == position[0] && j == position[1] 
-        j += 1
+    (position[0] - 1..position[0] + 1).each do |i|
+      (position[1] - 1..position[1] + 1).each do |j|
+        # don't insert center point, which is the originating position
+        @adjacent_list << [i, j] unless i == position[0] && j == position[1]
       end
-      j = 0
-      i += 1
-    end
-    p @adjacent_list
+    end 
+    @adjacent_list
   end
 =begin
   def adjacents(point, parent = nil)
@@ -151,7 +146,7 @@ class Maze
 =end
 
   def run
-    adjacents(@current_position)
+    p adjacents(@current_position)
   end
 end
 
