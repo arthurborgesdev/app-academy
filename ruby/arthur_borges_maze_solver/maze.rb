@@ -43,10 +43,17 @@ class Maze
     (position[0] - 1..position[0] + 1).each do |i|
       (position[1] - 1..position[1] + 1).each do |j|
         # don't insert center point, which is the originating position
-        @adjacent_list << [i, j] unless i == position[0] && j == position[1]
+        @adjacent_list << [i, j] unless i == position[0] && j == position[1] || invalid([i, j])
       end
     end 
     @adjacent_list
+  end
+
+  def invalid(position)
+    # p position[0]
+    # p position[1]
+    # p @maze[position[0]][position[1]]
+    @maze[position[0]][position[1]] == "*"
   end
 =begin
   def adjacents(point, parent = nil)
