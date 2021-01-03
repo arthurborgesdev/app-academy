@@ -190,6 +190,7 @@ class Maze
 =end
 
   def run
+    @open_list << start_position
     p adjacents(@current_position)
     p find_lowest_F(@open_list)
   end
