@@ -95,8 +95,8 @@ class Maze
     }
   end
 
-  def find_lowest_F
-    @open_list.reject! { |hash| hash[:position] == @current_position }
+  def find_lowest_F(list)
+    list.reject! { |hash| hash[:position] == @current_position }
     # p @open_list
     # p @closed_list
     lowest_F_value = @open_list.map { |hash| hash[:F] }.min
@@ -191,7 +191,7 @@ class Maze
 
   def run
     p adjacents(@current_position)
-    p find_lowest_F
+    p find_lowest_F(@open_list)
   end
 end
 
