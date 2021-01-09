@@ -7,7 +7,6 @@ class Maze
     @current_position = init_node(start_position)
     @open_list = []
     @closed_list = []
-    @adjacent_list = []
   end
 
   def create_maze(file)
@@ -34,6 +33,7 @@ class Maze
   def init_node(position)
     position_status = { 
       position: [position[0], position[1]], 
+      parent: nil,
       G: 0, 
       H: 0, 
       F: 0
@@ -41,14 +41,14 @@ class Maze
   end
 
   def calculate_H(position)
-    (position[0] - @end_position[0]).abs + (position[1] - @end_position[1]).abs - 1
+    ((position[0] - @end_position[0]).abs + (position[1] - @end_position[1]).abs - 1) * 10
   end
 
   def print
     @maze.each { |line| p line.join }
   end
 
-  def adjacents(node)
+  def search_adjacents(node)
     x = node[:position][0]
     y = node[:position][1]
     (x - 1..x + 1).each do |i|
@@ -56,7 +56,7 @@ class Maze
         @open_list << calculate_F([i, j], node) unless i == x && j == y || invalid([i, j])
       end
     end 
-    @open_list
+    node
   end
 
   def invalid(position)
@@ -89,6 +89,7 @@ class Maze
 
     position_status = { 
       position: [position[0], position[1]], 
+      parent: parent,
       G: calculated_G_score, 
       H: calculated_H_score, 
       F: calculated_G_score + calculated_H_score 
@@ -103,6 +104,12 @@ class Maze
     # p lowest_F_value
     lowest_F_point = @open_list.select { |hash| hash[:F] <= lowest_F_value }.first
     # p lowest_F_point
+  end
+
+  def move(node)
+
+    @maze[node[0]][node[1]] = "X"
+    [node[0], node[1]]
   end
 =begin
   def adjacents(point, parent = nil)
@@ -190,9 +197,19 @@ class Maze
 =end
 
   def run
-    @open_list << start_position
-    p adjacents(@current_position)
-    p find_lowest_F(@open_list)
+    @open_list << @current_position
+    parent = search_adjacents(@current_position)
+    p @open_list
+    
+    @closed_list << @open_list.delete(parent)
+    node = find_lowest_F(@open_list)
+    move(node[:position])
+    new_node = @open_list.delete(node)
+    # p "new_node: #{new_node}"
+    @closed_list << new_node
+    # p "@closed_list: #{@closed_list}"
+    parent = search_adjacents(new_node)
+    p @open_list
   end
 end
 
@@ -201,3 +218,4 @@ maze = Maze.new
 p maze
 maze.print
 maze.run
+maze.print
