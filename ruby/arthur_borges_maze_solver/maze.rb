@@ -49,14 +49,15 @@ class Maze
   end
 
   def search_adjacents(node)
+    adjacents = []
     x = node[:position][0]
     y = node[:position][1]
     (x - 1..x + 1).each do |i|
       (y - 1..y + 1).each do |j|
-        @open_list << calculate_F([i, j], node) unless i == x && j == y || invalid([i, j])
+        adjacents << calculate_F([i, j], node) unless i == x && j == y || invalid([i, j])
       end
     end 
-    node
+    adjacents
   end
 
   def invalid(position)
@@ -97,13 +98,12 @@ class Maze
   end
 
   def find_lowest_F(list)
-    list.reject! { |hash| hash[:position] == @current_position }
+    # list.reject! { |hash| hash[:position] == @current_position }
     # p @open_list
     # p @closed_list
-    lowest_F_value = @open_list.map { |hash| hash[:F] }.min
+    lowest_F_value = list.map { |hash| hash[:F] }.min
     # p lowest_F_value
-    lowest_F_point = @open_list.select { |hash| hash[:F] <= lowest_F_value }.first
-    # p lowest_F_point
+    lowest_F_point = list.select { |hash| hash[:F] <= lowest_F_value }.first
   end
 
   def move(node)
@@ -198,18 +198,22 @@ class Maze
 
   def run
     @open_list << @current_position
-    parent = search_adjacents(@current_position)
-    p @open_list
-    
-    @closed_list << @open_list.delete(parent)
-    node = find_lowest_F(@open_list)
-    move(node[:position])
-    new_node = @open_list.delete(node)
+    adjacents = search_adjacents(@current_position)
+    merged = @open_list.union(adjacents)
+    @closed_list << merged.delete(@current_position)
+
+    lowestF = find_lowest_F(merged)
+    move(lowestF[:position])
+
+    previous_parent = merged.delete(lowestF)
     # p "new_node: #{new_node}"
-    @closed_list << new_node
+    @closed_list << previous_parent
     # p "@closed_list: #{@closed_list}"
-    parent = search_adjacents(new_node)
-    p @open_list
+    adjacents = search_adjacents(previous_parent)
+
+    
+    p adjacents.intersection(merged)
+
   end
 end
 
