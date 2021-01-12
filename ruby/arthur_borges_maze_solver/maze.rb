@@ -202,44 +202,48 @@ class Maze
     end
   end  
 =end
-  def change_path(new_position)
-
+  def change_path(new_position, current_position)
+    @open_list[new_position[0], new_position[1]] = calculate_F(new_position)
+    @open_list[new_position[0], new_position[1]][:parent] = current_position
   end
-  
+
   def run
-    @open_list << @current_position
-    adjacents = search_adjacents(@current_position)
-    @open_list = @open_list.union(adjacents)
-    @closed_list << @open_list.delete(@current_position)
-
-    lowestF = find_lowest_F(@open_list)
-    move(lowestF[:position])
-    # print
-    previous_parent = @open_list.delete(lowestF)
-    # p "new_node: #{new_node}"
-    @closed_list << previous_parent
-    # p "@closed_list: #{@closed_list}"
-    adjacents = search_adjacents(previous_parent)
-
-    
-    # p adjacents.intersection(@open_list)
-    p "@open_list: #{@open_list}"
-    p "----------------------------------------------"
-    p "adjacents: #{adjacents}"
-    p "----------------------------------------------"
-    p "@closed_list: #{@closed_list}"
-    @open_list.each do |open_pos|
-      adjacents.each do |adj_pos|
-        if open_pos[:position] == adj_pos[:position]
-          change_path(adj_pos[:position]) if adj_pos[:G] < open_pos[:G]
-          # p "open_pos: #{open_pos}"
-          # p "adj_pos: #{adj_pos}"
-          # p open_pos[:G]
-          # p adj_pos[:G]
+    loop do
+      @open_list << @current_position
+      adjacents = search_adjacents(@current_position)
+      @open_list = @open_list.union(adjacents)
+      @closed_list << @open_list.delete(@current_position)
+  
+      lowestF = find_lowest_F(@open_list)
+      move(lowestF[:position])
+      # print
+      previous_parent = @open_list.delete(lowestF)
+      # p "new_node: #{new_node}"
+      @closed_list << previous_parent
+      # p "@closed_list: #{@closed_list}"
+      adjacents = search_adjacents(previous_parent)
+  
+      
+      # p adjacents.intersection(@open_list)
+      p "@open_list: #{@open_list}"
+      p "----------------------------------------------"
+      p "adjacents: #{adjacents}"
+      p "----------------------------------------------"
+      p "@closed_list: #{@closed_list}"
+      @open_list.each do |open_pos|
+        adjacents.each do |adj_pos|
+          if open_pos[:position] == adj_pos[:position]
+            change_path(adj_pos[:position], previous_parent) if adj_pos[:G] < open_pos[:G]
+            # p "open_pos: #{open_pos}"
+            # p "adj_pos: #{adj_pos}"
+            # p open_pos[:G]
+            # p adj_pos[:G]
+          end
         end
       end
+      print
+      break if inside_closed_list(@end_position) 
     end
-
   end
 end
 
