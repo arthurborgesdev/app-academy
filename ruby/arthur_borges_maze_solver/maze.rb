@@ -60,10 +60,17 @@ class Maze
     adjacents
   end
 
+  def inside_closed_list(position)
+    @closed_list.each do |closed_pos|
+      return true if closed_pos[:position] == position
+    end 
+    false
+  end
+
   def invalid(position)
     x = position[0]
     y = position[1]
-    @maze[x][y] == "*"
+    @maze[x][y] == "*" || inside_closed_list(position)
   end
 
   def first_diagonal?(x1, y1, x2, y2)
@@ -195,24 +202,43 @@ class Maze
     end
   end  
 =end
+  def change_path(new_position)
 
+  end
+  
   def run
     @open_list << @current_position
     adjacents = search_adjacents(@current_position)
-    merged = @open_list.union(adjacents)
-    @closed_list << merged.delete(@current_position)
+    @open_list = @open_list.union(adjacents)
+    @closed_list << @open_list.delete(@current_position)
 
-    lowestF = find_lowest_F(merged)
+    lowestF = find_lowest_F(@open_list)
     move(lowestF[:position])
-
-    previous_parent = merged.delete(lowestF)
+    # print
+    previous_parent = @open_list.delete(lowestF)
     # p "new_node: #{new_node}"
     @closed_list << previous_parent
     # p "@closed_list: #{@closed_list}"
     adjacents = search_adjacents(previous_parent)
 
     
-    p adjacents.intersection(merged)
+    # p adjacents.intersection(@open_list)
+    p "@open_list: #{@open_list}"
+    p "----------------------------------------------"
+    p "adjacents: #{adjacents}"
+    p "----------------------------------------------"
+    p "@closed_list: #{@closed_list}"
+    @open_list.each do |open_pos|
+      adjacents.each do |adj_pos|
+        if open_pos[:position] == adj_pos[:position]
+          change_path(adj_pos[:position]) if adj_pos[:G] < open_pos[:G]
+          # p "open_pos: #{open_pos}"
+          # p "adj_pos: #{adj_pos}"
+          # p open_pos[:G]
+          # p adj_pos[:G]
+        end
+      end
+    end
 
   end
 end
