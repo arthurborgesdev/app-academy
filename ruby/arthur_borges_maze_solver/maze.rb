@@ -119,40 +119,8 @@ class Maze
     [node[0], node[1]]
   end
 =begin
-  def adjacents(point, parent = nil)
-        # p @open_list.include?(point[i, j])
-        unless point[0] + point[1] == i + j || # second diagonal
-          (point[0] - point[1]).abs == (i - j).abs || # first diagonal
-          @maze[i][j] == "*" ||
-          @open_list.include?(point[i, j])
-          parent ? point_G_calc = parent[:G] + 10 : point_G_calc = 0
-          point_H_calc = H_calc(point)
-          hash_point = { 
-            point: [i, j], 
-            G: point_G_calc, 
-            H: point_H_calc, 
-            F: point_G_calc + point_H_calc 
-          }
-          @open_list << hash_point
-          p "@open_list: #{@open_list}"
-        end
-        j += 1
-      end
-      j = 0
-      i += 1
-    end
-  end
+  
 
-  def valid_adjacents(adjacent_positions)
-    valids = adjacent_positions.select! { |point| @maze[point[0]][point[1]] == " " }
-  end
-
-  def random_move(hash_point)
-    random_index = rand(hash_point.size)
-    move_point = hash_point[random_index][:point]
-    @maze[move_point[0]][move_point[1]] = "X"
-    [move_point[0], move_point[1]]
-  end
 
   def run
     start_position = { point: @current_position, G: 0, H: 0, F: 0 }
@@ -202,38 +170,25 @@ class Maze
     end
   end  
 =end
-  def change_path(new_position, current_position)
-    @open_list[new_position[0], new_position[1]] = calculate_F(new_position)
-    @open_list[new_position[0], new_position[1]][:parent] = current_position
+  def change_path(new_position, current_position)  
+    @open_list.each do |node| 
+      if node[:position] == [new_position[0], new_position[1]]
+        node[:parent] = current_position
+      end
+    end
   end
 
   def run
+    @open_list << @current_position
     loop do
-      @open_list << @current_position
+      @closed_list << @open_list.delete(@current_position)
       adjacents = search_adjacents(@current_position)
       @open_list = @open_list.union(adjacents)
-      @closed_list << @open_list.delete(@current_position)
-  
-      lowestF = find_lowest_F(@open_list)
-      move(lowestF[:position])
-      # print
-      previous_parent = @open_list.delete(lowestF)
-      # p "new_node: #{new_node}"
-      @closed_list << previous_parent
-      # p "@closed_list: #{@closed_list}"
-      adjacents = search_adjacents(previous_parent)
-  
       
-      # p adjacents.intersection(@open_list)
-      p "@open_list: #{@open_list}"
-      p "----------------------------------------------"
-      p "adjacents: #{adjacents}"
-      p "----------------------------------------------"
-      p "@closed_list: #{@closed_list}"
       @open_list.each do |open_pos|
         adjacents.each do |adj_pos|
           if open_pos[:position] == adj_pos[:position]
-            change_path(adj_pos[:position], previous_parent) if adj_pos[:G] < open_pos[:G]
+            change_path(adj_pos[:position], adj_pos) if adj_pos[:G] < open_pos[:G]
             # p "open_pos: #{open_pos}"
             # p "adj_pos: #{adj_pos}"
             # p open_pos[:G]
@@ -241,6 +196,14 @@ class Maze
           end
         end
       end
+      @current_position = find_lowest_F(@open_list)
+      move(@current_position[:position])
+
+      #p "@open_list: #{@open_list}"
+      #p "----------------------------------------------"
+      #p "adjacents: #{adjacents}"
+      #p "----------------------------------------------"
+      #p "@closed_list: #{@closed_list}"
       print
       break if inside_closed_list(@end_position) 
     end
